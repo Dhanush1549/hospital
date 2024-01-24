@@ -1,0 +1,697 @@
+<label for="department">Department</label>
+        <select class="form-control" name="sel" id="departmentSelect" required>
+            <option value="">Select a Department</option>
+            {% for c in departments %}
+                <option value="{{ c.id }}">{{ c.department }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Doctor Dropdown -->
+        <label for="doctor">Doctor</label>
+        <select class="form-control" name="doctor" id="doctorSelect" required>
+            <option value="">Select a Doctor</option>
+            <!-- Doctors will be dynamically added here based on the selected department -->
+        </select>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <!-- Script for dynamically updating the doctor dropdown based on the selected department -->
+    <script>
+        document.getElementById('departmentSelect').addEventListener('change', function() {
+            var selectedDepartmentId = this.value;
+
+            // Fetch doctors for the selected department using AJAX (you can use jQuery or Fetch API)
+            // Update the doctor dropdown dynamically
+            // Example: Fetch doctors using Fetch API
+            fetch(`/get_doctors_by_department/?department_id=${selectedDepartmentId}`)
+                .then(response => response.json())
+                .then(doctors => {
+                    var doctorSelect = document.getElementById('doctorSelect');
+                    doctorSelect.innerHTML = '<option value="">Select a Doctor</option>';
+                    doctors.forEach(doctor => {
+                        var option = document.createElement('option');
+                        option.value = doctor.id;
+                        option.text = doctor.D_name;
+                        doctorSelect.appendChild(option);
+                    });
+                });
+        });
+    </script>
+
+
+
+
+
+
+from django.db import models
+from django.utils.crypto import get_random_string
+
+class Appointment(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
+    appointment_date = models.DateField()
+    appointment_time = models.TimeField()
+    reason = models.TextField()
+    token_number = models.CharField(max_length=6, default=get_random_string, editable=False, unique=True)
+
+    def __str__(self):
+        return f"{self.patient.name}'s Appointment on {self.appointment_date} at {self.appointment_time}"
+
+
+
+
+
+
+        def appointment_form(request, patient_id):
+        patient = Patient.objects.get(patient_id=patient_id)
+        departments = Department.objects.all()
+        doctors = Doctor.objects.all()
+    
+        if request.method == 'POST':
+            appointment_date = request.POST.get('appointment_date')
+            appointment_time = request.POST.get('appointment_time')
+            reason = request.POST.get('reason')
+            department_id = request.POST.get('department')
+            doctor_id = request.POST.get('doctor')
+    
+            # Generate a random token number
+            length_of_token = 6
+            random_token = get_random_string(length=length_of_token)
+    
+            appointment = Appointment(
+                patient=patient,
+                department_id=department_id,
+                doctor_id=doctor_id,
+                appointment_date=appointment_date,
+                appointment_time=appointment_time,
+                reason=reason,
+                token_number=random_token
+            )
+            appointment.save()
+    
+            return redirect('appointment_details', appointment_id=appointment.id)
+    
+        return render(request, 'appointment_form.html', {'patient': patient, 'departments': departments, 'doctors': doctors})        
+
+
+
+
+ 
+        from django.db import models
+        from django.contrib.auth.models import AbstractUser
+        from django.utils.crypto import get_random_string
+        from django.db.models.signals import pre_save
+        from django.dispatch import receiver
+        
+        class CustomUser(AbstractUser):
+            USER_TYPE_CHOICES = (
+                ('1', 'Type 1'),
+                ('2', 'Type 2'),
+                ('3', 'Type 3'),
+                ('4', 'Type 4'),
+            )
+        
+            user_type = models.CharField(default='1', max_length=1, choices=USER_TYPE_CHOICES)
+        
+        class Department(models.Model):
+            department = models.CharField(max_length=255)
+        
+            def __str__(self):
+                return self.department
+        
+        class Doctor(models.Model):
+            user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='doctor', null=True)
+            D_name = models.CharField(max_length=100)
+            username = models.CharField(max_length=50, unique=True)
+            email = models.EmailField(unique=True)
+            age = models.IntegerField()
+            contact_number = models.CharField(max_length=15)
+            department = models.ForeignKey(Department, on_delete=models.CASCADE)
+        
+            def __str__(self):
+                return self.D_name
+        
+        class Patient(models.Model):
+            patient_id = models.CharField(max_length=8, primary_key=True)
+            name = models.CharField(max_length=100)
+            address = models.CharField(max_length=255)
+            mobile_number = models.CharField(max_length=15)
+            email = models.EmailField(unique=True)
+        
+            def __str__(self):
+                return self.name
+        
+        class Appointment(models.Model):
+            patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+            doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+            department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
+            appointment_date = models.DateField()
+            appointment_time = models.TimeField()
+            reason = models.TextField()
+            token_number = models.IntegerField(unique=True, blank=True, null=True)
+        
+        @receiver(pre_save, sender=Appointment)
+        def generate_token_number(sender, instance, **kwargs):
+            if instance.token_number is None:
+                instance.token_number = int(get_random_string(length=6, allowed_chars='0123456789'))
+        
+            def __str__(self):
+                return f"{self.patient.name}'s Appointment on {self.appointment_date} at {self.appointment_time}"
+        
+        class Consultation(models.Model):
+            patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+            doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+            appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE, related_name='consultations', null=True)
+            reason = models.TextField()
+            medicine_name = models.CharField(max_length=255)
+            consumption_time_choices = (
+                ('morning', 'Morning'),
+                ('evening', 'Evening'),
+            )
+            consumption_time = models.CharField(max_length=7, choices=consumption_time_choices)
+        
+        class Pharmacy(models.Model):
+            username = models.CharField(max_length=50, unique=True)
+            pharmacy_name = models.CharField(max_length=255)
+            phone_number = models.CharField(max_length=20)
+            email = models.EmailField(unique=True)
+        
+            def __str__(self):
+                return f"{self.pharmacy_name}'s Pharmacy"
+        
+        class Prescription(models.Model):
+            patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+            doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+            appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
+            consultation = models.ForeignKey(Consultation, on_delete=models.CASCADE)
+        
+            def __str__(self):
+                return f"{self.patient.name}'s Prescription"
+                
+
+
+
+
+
+
+
+
+
+
+
+
+                {% extends 'doctor_home.html' %}
+
+                {% block content %}
+                    <h1>Appointment List</h1>
+                
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Appointment Date</th>
+                                <th>Appointment Time</th>
+                                <th>Patient Name</th>
+                                <th>Token Number</th>
+                                <th>Consultation Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                                <tr {% if appointment.consulted %}class="table-success"{% endif %}>
+                                    <td>{{ appointment.appointment_date }}</td>
+                                    <td>{{ appointment.appointment_time }}</td>
+                                    <td>{{ appointment.patient.name }}</td>
+                                    <td>{{ appointment.token_number }}</td>
+                                    <td>
+                                        {% if appointment.consulted %}
+                                            <button type="button" class="btn btn-success" style="color: white;" disabled>Consulted</button>
+                                        {% else %}
+                                            <a href="{% url 'consultation' appointment.id %}" class="btn btn-primary" onclick="return confirm('Are you sure you want to proceed with the consultation?')">Consult</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                
+                    {% if consultation_message %}
+                        <div class="alert alert-success" role="alert">
+                            {{ consultation_message }}
+                        </div>
+                    {% endif %}
+                {% endblock %}                
+
+
+
+                body {
+                    background-image: url('{% static "image/bg5.jpg" %}');
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                }                
+
+
+
+
+                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">                
+
+                
+                <!DOCTYPE html>
+                <html lang="en">
+                
+                <head>
+                    {% load static %}
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Document</title>
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+                    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+                    <style>
+                        body {
+                            background-image: url('{% static "image/pm1.jpg" %}');
+                            background-size: cover;
+                            background-repeat: no-repeat;
+                            background-position: center;
+                        }
+                    </style>
+                </head>
+                
+                
+                <body>
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+                        <a class="navbar-brand" href="#">Navbar</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item active">
+                                    <a class="nav-link" href="{% url 'nav' %}">Home <span class="sr-only">(current)</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'consulted_patient_details' %}">RECENT PRESCRIPTIONS</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'all_consulted_patients' %}">PATIENT PRESCRIPTIONS</a>
+                                </li>
+                                <li class="nav-item">
+                                    <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'search_patient' %}">
+                                        <input class="form-control mr-sm-2" type="search" placeholder="Search Patient ID"
+                                            aria-label="Search" name="patient_id" required>
+                                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                                    </form>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'change_password' %}">CHANGE PASSWORD</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">LOGOUT</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'signup_pharmacy' %}">SIGNUP</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                
+                    <div class="container mt-5">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                </body>
+                
+                </html>                
+
+
+
+
+
+nav 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Hospital</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('{% static "image/hosbg1.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 56px;
+            background-attachment: fixed;
+       
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 0;
+             
+            }
+        }
+
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+
+        .footer {
+            padding: 20px;
+            background-color: rgba(55, 53, 53, 0.8);
+            color: #f0e7e7;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+        .quote-container {
+            text-align: center;
+            padding: 50px 20px; 
+            background-color: rgba(0, 0, 0, 0.5); 
+            color: #fff; 
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .quote {
+            font-size: 28px; 
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="{% url 'nav' %}">Welcare</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'nav' %}"> <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'reception' %}">RECEPTION</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'nav3' %}">DOCTORS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'nav4' %}">PHARMACY</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">CONTACT US</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    {% for message in messages %}
+    <h5>
+        <div class="alert alert-success mt-5" style="width: 50%;">
+            {{ message }}
+        </div>
+    </h5>
+    {% endfor %}
+
+    <div class="container mt-5">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+    <div class="quote-container">
+        <p class="quote">"Welcome To Welcare Hospital You are in Good Hands...."</p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; Your Hospital 2024. All rights reserved.</p>
+        <p>123 Medical Street, Cityville</p>
+        <p>Contact: +1 123-456-7890</p>
+    </div>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+</body>
+
+</html>         
+
+
+
+admin_login
+<style>
+    .custom-alert {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .container {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 80px;
+
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="container">
+
+
+                <form action="{% url 'admin_login' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" name="username" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" name="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    <p class="mt-3">
+                        <a href="{% url 'forgotpassword' %}">Forgot Password?</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+appointment_form
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            padding-top: 56px;
+            background-image: url('{% static "image/hosbg1.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            background-attachment: fixed;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 0;
+            }
+        }
+
+        .footer {
+            padding: 20px;
+            background-color: rgba(55, 53, 53, 0.8);
+            color: #f0e7e7;
+            text-align: center;
+            position: bottom;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .container {
+            background-color: rgba(9, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 80px;
+            color: #f2eaea;
+
+        }
+
+        .table th,
+        .table td {
+            color: #efe4e4;
+            /* Set text color for the table cells */
+            font-size: large;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="#">Welcare</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'nav' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_department' %}">ADD DEPARTMENT</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'all_departments' %}">DEPARTMENT DETAILS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register_patient' %}">REGISTER PATIENT</a>
+                </li>
+
+
+                <li class="nav-item">
+                    <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'search_patient' %}">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search Patient ID"
+                            aria-label="Search" name="patient_id" required>
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout_view' %}">LOGOUT</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    {% for message in messages %}
+    <h5>
+        <div class="alert alert-success mt-5" style="width: 50%;">
+            {{ message }}
+        </div>
+    </h5>
+    {% endfor %}
+
+    <div class="container mt-4">
+        <h2>Appointment Form</h2>
+        <p>Patient ID: {{ patient.patient_id }}</p>
+        <p>Patient Name: {{ patient.name }}</p>
+
+        <form method="post" action="{% url 'appointment_form' patient_id=patient.patient_id %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="appointment_date">Appointment Date:</label>
+                <input type="date" class="form-control" name="appointment_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="appointment_time">Appointment Time:</label>
+                <input type="time" class="form-control" name="appointment_time" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reason">Reason for Appointment:</label>
+                <textarea class="form-control" name="reason" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department:</label>
+                <select class="form-control" name="department" id="departmentSelect" required>
+                    <option value="">Select a Department</option>
+                    {% for department in departments %}
+                    <option value="{{ department.id }}">{{ department.department }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="doctor">Doctor:</label>
+                <select class="form-control" name="doctor" id="doctorSelect" required>
+                    <option value="">Select a Doctor</option>
+
+                </select>
+            </div>
+
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </form>
+    </div>
+
+
+    <script>
+        document.getElementById('departmentSelect').addEventListener('change', function () {
+            var selectedDepartmentId = this.value;
+
+
+            fetch(`/get_doctors_by_department/?department_id=${selectedDepartmentId}`)
+                .then(response => response.json())
+                .then(doctors => {
+                    var doctorSelect = document.getElementById('doctorSelect');
+                    doctorSelect.innerHTML = '<option value="">Select a Doctor</option>';
+                    doctors.forEach(doctor => {
+                        var option = document.createElement('option');
+                        option.value = doctor.id;
+                        option.text = doctor.D_name;
+                        doctorSelect.appendChild(option);
+                    });
+                });
+        });
+    </script>
+
+    <div class="footer">
+        <p>&copy; Your Hospital 2024. All rights reserved.</p>
+        <p>123 Medical Street, Cityville</p>
+        <p>Contact: +1 123-456-7890</p>
+    </div>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+</body>
+
+</html>

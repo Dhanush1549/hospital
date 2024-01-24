@@ -1,0 +1,55 @@
+{% extends 'pharmacy_home.html' %}
+
+{% block content %}
+<style>
+    .container {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 80px;
+        margin-left: 400px;
+        margin-top: 80px;
+
+    }
+    .sidebar{
+        margin-top: -90px;
+        height: 1000px;
+    }
+
+    @media (max-width: 768px) {
+
+        .mt-4 {
+            margin-top: -2.5rem !important;
+        }
+
+        .container {
+            margin-left: 40px;
+            width: 319px;
+        }
+    }
+</style>
+<div class="container mt-4">
+    <h1 class="mb-4">All Consulted Patients</h1>
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Patient ID</th>
+                    <th>Medicine Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consultation in consulted_patients %}
+                <tr>
+                    <td>{{ consultation.patient.name }}</td>
+                    <td>{{ consultation.patient.patient_id }}</td>
+                    <td>{{ consultation.medicine_name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

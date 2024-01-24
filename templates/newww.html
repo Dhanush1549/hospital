@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('{% static "image/d2.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 56px;
+            background-attachment: fixed;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 0;
+            }
+
+            .top-bar p {
+                font-size: 16px;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding-top: 0;
+            }
+
+            .content {
+                margin-left: 0;
+                padding: 10px;
+                width: 100%;
+            }
+        }
+
+        .top-bar {
+            height: 56px;
+            background-color: #18c88a;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .top-bar p {
+            font-size: 20px;
+            font-style: italic;
+            color: #fff;
+            margin: 0;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            background-color: #110137;
+            padding-top: 56px;
+            transition: width 0.3s;
+        }
+
+        .sidebar a {
+            padding: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #000;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            width: calc(100% - 250px);
+        }
+
+        .footer {
+            padding: 20px 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 20%;
+        }
+
+        .footer p {
+            margin-bottom: 5px;
+        }
+
+        .container {
+            max-width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .search-form {
+            max-width: 400px;
+            margin: 40px auto 0;
+            /* Adjusted margin-top to push the form down */
+        }
+
+        @media (max-width: 768px) {
+            .search-form {
+                max-width: 100%;
+                /* Make the form full width on smaller screens */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">
+        <p>welcome to Welcare multispeciality hospital</p>
+    </div>
+
+    <div class="sidebar">
+        <a class="btn btn-primary" href="#">Navbar</a>
+        <a href="{% url 'nav3' %}" class="btn btn-success">Home</a>
+        <a href="{% url 'appointment_list' %}" class="btn btn-primary">APPOINTMENT LIST</a>
+        <a href="{% url 'doctor_consulted_patients' %}" class="btn btn-success">Patient Consultation History</a>
+        <a href="{% url 'change_password' %}" class="btn btn-primary">CHANGE PASSWORDS</a>
+        <a href="{% url 'doctor_search_patient' %}" class="btn btn-warning">SEARCH</a>
+        <a href="{% url 'nav3' %}" class="btn btn-danger">LOGOUT</a>
+    </div>
+
+    {% for message in messages %}
+    <h5>
+        <div class="alert alert-success mt-5" style="width: 100%;">
+            {{ message }}
+        </div>
+    </h5>
+    {% endfor %}
+
+    <div class="container mt-4">
+        <h2 style="color: #fff; font-style: italic;">Search Patient</h2>
+        <form method="post" action="{% url 'doctor_search_patient' %}" class="search-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="patient_id" style="color: #fff; font-size: larger;">Patient ID:</label>
+                <input type="text" name="patient_id" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-success">Search</button>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>&copy; Your Hospital 2024. All rights reserved.</p>
+        <p>123 Medical Street, Cityville</p>
+        <p>Contact: +1 123-456-7890</p>
+    </div>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('{% static "image/d2.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 56px;
+            background-attachment: fixed;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            background-color: #110137;
+            padding-top: 56px;
+            transition: width 0.3s;
+            margin-top: -56px;
+        }
+
+        .sidebar a {
+            padding: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            width: calc(100% - 250px);
+        }
+
+        .h5,
+        h5 {
+            margin-top: -98px;
+            width: 1200px;
+            margin-left: 1px;
+            height: 158px;
+        }
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                width: 104px;
+
+            }
+
+            .my-4 {
+                margin-top: 1.5rem !important;
+            }
+
+            .container {
+                margin-left: -352px;
+            }
+
+            .h5,
+            h5 {
+                margin-top: -114px;
+                width: 276px;
+                margin-left: 1px;
+                height: 158px;
+            }
+
+        }
+        .container {
+            background-color: rgba(9, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 80px;
+            color: #f2eaea;
+            margin-left: 400px;
+
+        }
+
+        .table th,
+        .table td {
+            color: #efe4e4;
+            /* Set text color for the table cells */
+            font-size: large;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <a class="btn btn-primary" href="#">Welcare</a>
+        <a href="{% url 'nav' %}" class="btn btn-primary">Home</a>
+        <a href="{% url 'add_department' %}" class="btn btn-primary">ADD DEPARTMENT</a>
+        <a href="{% url 'all_departments' %}" class="btn btn-primary">DEPARTMENT DETAILS</a>
+        <a href="{% url 'register_patient' %}" class="btn btn-primary">REGISTER PATIENT</a>
+        <form method="GET" action="{% url 'search_patient' %}">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search Patient ID" aria-label="Search"
+                name="patient_id" required>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        <a href="{% url 'logout_view' %}" class="btn btn-danger">LOGOUT</a>
+    </div>
+
+        {% for message in messages %}
+        <h5>
+            <div class="alert alert-success mt-5" style="width: 50%;">
+                {{ message }}
+            </div>
+        </h5>
+        {% endfor %}
+
+        <div class="container mt-4">
+            <h2>Appointment Form</h2>
+            <p>Patient ID: {{ patient.patient_id }}</p>
+            <p>Patient Name: {{ patient.name }}</p>
+    
+            <form method="post" action="{% url 'appointment_form' patient_id=patient.patient_id %}">
+                {% csrf_token %}
+    
+                <div class="form-group">
+                    <label for="appointment_date">Appointment Date:</label>
+                    <input type="date" class="form-control" name="appointment_date" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="appointment_time">Appointment Time:</label>
+                    <input type="time" class="form-control" name="appointment_time" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="reason">Reason for Appointment:</label>
+                    <textarea class="form-control" name="reason" rows="4" required></textarea>
+                </div>
+    
+                <div class="form-group">
+                    <label for="department">Department:</label>
+                    <select class="form-control" name="department" id="departmentSelect" required>
+                        <option value="">Select a Department</option>
+                        {% for department in departments %}
+                        <option value="{{ department.id }}">{{ department.department }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+    
+                <div class="form-group">
+                    <label for="doctor">Doctor:</label>
+                    <select class="form-control" name="doctor" id="doctorSelect" required>
+                        <option value="">Select a Doctor</option>
+    
+                    </select>
+                </div>
+    
+                <input type="submit" class="btn btn-primary" value="Submit">
+            </form>
+        </div>
+    
+    
+        <script>
+            document.getElementById('departmentSelect').addEventListener('change', function () {
+                var selectedDepartmentId = this.value;
+    
+    
+                fetch(`/get_doctors_by_department/?department_id=${selectedDepartmentId}`)
+                    .then(response => response.json())
+                    .then(doctors => {
+                        var doctorSelect = document.getElementById('doctorSelect');
+                        doctorSelect.innerHTML = '<option value="">Select a Doctor</option>';
+                        doctors.forEach(doctor => {
+                            var option = document.createElement('option');
+                            option.value = doctor.id;
+                            option.text = doctor.D_name;
+                            doctorSelect.appendChild(option);
+                        });
+                    });
+            });
+        </script>
+    
+        <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+</body>
+
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('{% static "image/d2.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 56px;
+            background-attachment: fixed;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            background-color: #110137;
+            padding-top: 56px;
+            transition: width 0.3s;
+            margin-top: -56px;
+        }
+
+        .sidebar a {
+            padding: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            width: calc(100% - 250px);
+        }
+
+        .h5,
+        h5 {
+            margin-top: -98px;
+            width: 1200px;
+            margin-left: 1px;
+            height: 158px;
+        }
+        .container {
+            background-color: rgba(248, 245, 245, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 80px;
+            margin-top: -600px;
+            margin-left: 100px;
+        }
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                width: 104px;
+
+            }
+
+            .my-4 {
+                margin-top: 1.5rem !important;
+            }
+
+            .container {
+                margin-left: -352px;
+            }
+
+            .h5,
+            h5 {
+                margin-top: -114px;
+                width: 276px;
+                margin-left: 1px;
+                height: 158px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <a class="btn btn-primary" href="#">Navbar</a>
+        <a href="{% url 'nav3' %}" class="btn btn-success">Home</a>
+        <a href="{% url 'appointment_list' %}" class="btn btn-primary">APPOINTMENT LIST</a>
+        <a href="{% url 'doctor_consulted_patients' %}" class="btn btn-success">Patient Consultation History</a>
+        <a href="{% url 'change_password' %}" class="btn btn-primary">CHANGE PASSWORDS</a>
+        <a href="{% url 'doctor_search_patient' %}" class="btn btn-warning">SEARCH</a>
+        <a href="{% url 'nav3' %}" class="btn btn-danger">LOGOUT</a>
+    </div>
+    {% for message in messages %}
+    <h5>
+        <div class="alert alert-success mt-5" style="width: 50%;">
+            {{ message }}
+        </div>
+    </h5>
+    {% endfor %}
+
+    <div class="container mt-4">
+        <h1 style="color: #090000;">Appointment List</h1>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Appointment Date</th>
+                        <th>Appointment Time</th>
+                        <th>Patient Name</th>
+                        <th>Token Number</th>
+                        <th>Consultation Status</th>
+                        <th>Reassign Patient</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                    <tr {% if appointment.consulted %}class="table-success" {% endif %}>
+                        <td>{{ appointment.appointment_date }}</td>
+                        <td>{{ appointment.appointment_time }}</td>
+                        <td>{{ appointment.patient.name }}</td>
+                        <td>{{ appointment.token_number }}</td>
+                        <td>
+                            {% if appointment.consulted %}
+                            <button type="button" class="btn btn-success" style="color: rgb(194, 8, 8);"
+                                disabled>Consulted</button>
+                            {% else %}
+                            <a href="{% url 'consultation' appointment.id %}" class="btn btn-primary"
+                                onclick="return confirm('Are you sure you want to proceed with the consultation?')">Consult</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'reassign_patient' appointment.id %}" class="btn btn-warning">Reassign</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+</body>
+
+</html>

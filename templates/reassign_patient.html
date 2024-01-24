@@ -1,0 +1,50 @@
+{% extends 'doctor_home.html' %}
+
+{% block content %}
+<style>
+    .container {
+        background-color: rgba(241, 235, 235, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 80px;
+        margin-top: 40px;
+        margin-left: 400px;
+
+    }
+    .table th,
+    .table td {
+        color: #090000; /* Set text color for the table cells */
+        font-size: large;
+    }
+    @media (max-width: 768px) {
+        .container {
+            margin-top: -0.5rem !important;
+            width: 250px;
+            margin-left: 107px;
+        }
+    }
+</style>
+<div class="container mt-4">
+    <h1 class="mb-4" style="color: #121111;">Reassign Patient</h1>
+
+    <div class="mb-4">
+        <p><strong>Patient:</strong> {{ appointment.patient.name }}</p>
+        <p><strong>Current Doctor:</strong> {{ appointment.doctor.D_name }}</p>
+    </div>
+
+    <form method="post" action="{% url 'reassign_patient' appointment.id %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="new_doctor">Select New Doctor:</label>
+            <select class="form-control" name="new_doctor" id="new_doctor" required>
+                {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.D_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Reassign Patient</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'doctor_home.html' %}
+
+{% block content %}
+<style>
+    .container {
+        background-color: rgba(243, 238, 238, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 80px;
+        margin-top: 40px;
+        margin-left: 400px;
+
+    }
+
+    .table th,
+    .table td {
+        color: #0b0b0b;
+        /* Set text color for the table cells */
+        font-size: large;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            margin-top: -0.5rem !important;
+            width: 314px;
+            margin-left: 44px;
+        }
+
+        .h1,
+        h1 {
+            font-size: 1.5rem;
+        }
+
+    }
+</style>
+<div class="container mt-4">
+    <h1 style="color: #090909;">Doctor Consulted Patients</h1>
+
+    <p style="color: #010101; font-size: larger;">Welcome, {{ doctor.D_name }}!</p>
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Patient ID</th>
+                    <th>Medicine Name</th>
+                    <th>Consumption Time</th>
+                    <th>Appointment Date</th>
+                    <th>Appointment Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient_data in consulted_patients %}
+                <tr>
+                    <td>{{ patient_data.patient.name }}</td>
+                    <td>{{ patient_data.patient.patient_id }}</td>
+                    <td>{{ patient_data.medicine_name }}</td>
+                    <td>{{ patient_data.consumption_time }}</td>
+                    <td>{{ patient_data.appointment_date }}</td>
+                    <td>{{ patient_data.appointment_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

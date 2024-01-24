@@ -1,0 +1,64 @@
+{% extends 'doctor_home.html' %}
+
+{% block content %}
+<style>
+    .container {
+        background-color: rgba(248, 245, 245, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 80px;
+        margin-top: 40px;
+    }
+
+    .label {
+        font-size: 90px;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            margin-left: 0;
+        }
+
+        .label {
+            font-size: 42px;
+        }
+    }
+
+    .search-form {
+        max-width: 400px;
+        margin: auto;
+        margin-top: 40px;
+    }
+
+    @media screen and (max-width: 600px) {
+        .search-form {
+            max-width: 100%;
+        }
+
+        .container {
+            margin-left: 48px;
+            width: 305px;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+    {% for message in messages %}
+    <div class="alert alert-success mt-3" style="width: 100%;">
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    <h2 style="color: #080000; font-style: italic; text-align: center;">Search Patient</h2>
+
+    <form method="post" action="{% url 'doctor_search_patient' %}" class="search-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="patient_id" style="color: #040404; font-style: italic;">Patient ID:</label>
+            <input type="text" name="patient_id" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Search</button>
+    </form>
+</div>
+
+{% endblock %}

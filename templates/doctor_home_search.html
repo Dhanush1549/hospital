@@ -1,0 +1,79 @@
+{% extends 'doctor_home.html' %}
+
+{% block content %}
+<style>
+  .container {
+    background-color: rgba(241, 235, 235, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 80px;
+  }
+
+  h2 {
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
+
+  .list-group {
+    margin-top: 20px;
+  }
+
+  .list-group-item {
+    background-color: #000000;
+    margin-bottom: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 5px;
+    padding: 10px;
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .container {
+            margin-top: -0.5rem !important;
+            width: 311px;
+            margin-left: 46px;
+        }
+
+    h2 {
+      font-size: 1.5em;
+    }
+
+    .list-group-item {
+      padding: 8px;
+    }
+  }
+</style>
+
+<div class="container mt-4">
+  <h2>Patient and Appointment Details</h2>
+  {% if patient %}
+  {% for message in messages %}
+  <h5>
+    <div class="alert alert-success mt-3" style="width: 100%;">
+      {{ message }}
+    </div>
+  </h5>
+  {% endfor %}
+
+  <p>Patient ID: {{ patient.patient_id }}</p>
+  <p>Name: {{ patient.name }}</p>
+  <!-- Add other patient details as needed -->
+
+  {% if appointment_details %}
+  <p>Appointment Date: {{ appointment_details.appointment_date }}</p>
+  <p>Appointment Time: {{ appointment_details.appointment_time }}</p>
+  <p>Reason: {{ appointment_details.reason }}</p>
+  <!-- Add other appointment details as needed -->
+  {% else %}
+  <p>No appointment details found for this patient.</p>
+  {% endif %}
+  {% else %}
+  <p>No patient found with the specified ID.</p>
+  {% endif %}
+  <!-- Print out appointment details for debugging -->
+</div>
+{% endblock %}

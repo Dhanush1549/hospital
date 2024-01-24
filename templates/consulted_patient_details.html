@@ -1,0 +1,79 @@
+{% extends 'pharmacy_home.html' %}
+
+{% block content %}
+<style>
+    .container {
+        background-color: rgba(250, 248, 248, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 80px;
+        margin-left: 400px;
+    }
+    .sidebar{
+        margin-top: -90px;
+        height: 1000px;
+    }
+
+    @media (max-width: 768px) {
+
+        .mt-4 {
+            margin-top: -2.5rem !important;
+        }
+
+        .container {
+            margin-left: 38px;
+            width: 321px;
+        }
+    }
+</style>
+<div class="container mt-4">
+    <h2>Consulted Patient Details</h2>
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Doctor Name</th>
+                    <th>Medicine Name</th>
+                    <th>Consumption Time</th>
+                    <th>Department</th>
+                    <th>Appointment Date</th>
+                    <th>Appointment Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consultation in consulted_patients %}
+                <tr>
+                    <td>{{ consultation.patient.name }}</td>
+                    <td>{{ consultation.doctor.D_name }}</td>
+                    <td>{{ consultation.medicine_name }}</td>
+                    <td>{{ consultation.consumption_time }}</td>
+                    <td>
+                        {% if consultation.appointment and consultation.appointment.department %}
+                        {{ consultation.appointment.department.department }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if consultation.appointment and consultation.appointment.appointment_date %}
+                        {{ consultation.appointment.appointment_date }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if consultation.appointment and consultation.appointment.appointment_time %}
+                        {{ consultation.appointment.appointment_time }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

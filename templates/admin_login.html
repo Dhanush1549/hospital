@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Hospital</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-image: url('{% static "image/hosbg1.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 56px;
+            background-attachment: fixed;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 0;
+            }
+        }
+
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            text-align: center; /* Center align items */
+        }
+
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .nav-item {
+            margin: 0 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link i {
+            margin-right: 5px;
+    
+        }
+
+        .footer {
+            padding: 20px;
+            background-color: rgba(55, 53, 53, 0.8);
+            color: #f0e7e7;
+            text-align: center;
+            bottom: 0;
+            width: 100%;
+            margin-top: 10%;
+        }
+
+        .footer p {
+            margin: 5px;
+        }
+
+        .quote-container {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .quote {
+            font-size: 24px;
+            font-style: italic;
+        }
+
+        .custom-alert {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .container-main {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 80px;
+            margin-top: 20px;
+            margin-top: 5.5rem!important;
+        }
+        
+        @media (max-width: 768px) {
+            .quote-container {
+                padding: 20px 10px;
+            }
+            .container-main {
+            margin-top: 5.5rem!important;
+        }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="{% url 'nav' %}">Welcare</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'nav' %}"><i class="fas fa-home"></i> Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'reception' %}"><i class="fas fa-user"></i> RECEPTION</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'nav3' %}"><i class="fas fa-user-md"></i> DOCTORS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'nav4' %}"><i class="fas fa-medkit"></i> PHARMACY</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container container-main mt-4">
+        {% for message in messages %}
+            <div class="alert alert-success mt-3" style="width: 100%;">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <form action="{% url 'admin_login' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" name="username" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" name="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button><br>
+                    <a href="{% url 'forgotpassword' %}" style="font-size: larger;">Forgot Password</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% block content %}
+
+    {% endblock %}
+
+    <div class="quote-container">
+        <p class="quote">"Welcome To Welcare Hospital You are in Good Hands...."</p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; Your Hospital 2024. All rights reserved.</p>
+        <p>123 Medical Street, Cityville</p>
+        <p>Contact: +1 123-456-7890</p>
+    </div>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+</body>
+
+</html>

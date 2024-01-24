@@ -1,0 +1,58 @@
+{% extends 'pharmacy_home.html' %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card custom-patient-details">
+                <div class="card-body">
+                    <h2>Patient Details</h2>
+                    <p class="card-text">ID: {{ patient.patient_id }}</p>
+                    <p class="card-text">Name: {{ patient.name }}</p>
+                    <p class="card-text">Address: {{ patient.address }}</p>
+                    <!-- Add more patient details as needed -->
+                    <hr>
+                    <h3>Consultations</h3>
+                    {% if consultations %}
+                    {% for consultation in consultations %}
+                    <p class="card-text"><strong>Consultation Reason:</strong> {{ consultation.reason }}</p>
+                    <p class="card-text"><strong>Medicine Name:</strong> {{ consultation.medicine_name }}</p>
+                    <p class="card-text"><strong>Consumption Time:</strong> {{consultation.get_consumption_time_display}}</p>
+                    <hr>
+                    {% endfor %}
+                    {% else %}
+                    <p class="card-text">No consultations found for this patient.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-patient-details {
+        margin-left: 83px;
+        width: 1000px;
+        text-align: center;
+    }
+
+    .sidebar {
+        margin-top: -90px;
+        height: 1000px;
+    }
+
+    @media (max-width: 768px) {
+        .custom-patient-details {
+            margin-left: 373px;
+            margin-top: -34px;
+            width: 321px;
+        }
+
+        .card-body {
+            margin-left: 4px;
+
+        }
+
+    }
+</style>
+{% endblock %}

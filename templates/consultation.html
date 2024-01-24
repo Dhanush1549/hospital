@@ -1,0 +1,53 @@
+{% extends 'doctor_home.html' %}
+
+{% block content %}
+<style>
+    .container {
+        background-color: rgba(249, 249, 249, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 80px;
+        margin-top: 40px;
+        margin-left: 400px;
+
+    }
+    @media (max-width: 768px) {
+        .container {
+            margin-top: -0.5rem !important;
+            width: 250px;
+            margin-left: 107px;
+        }
+    }
+
+</style>
+<div class="container mt-4">
+    <h1>Consultation</h1>
+
+    <p>Patient: {{ appointment.patient.name }}</p>
+    <p>Doctor: {{ appointment.doctor.D_name }}</p>
+
+    <form method="post" action="{% url 'consultation' appointment.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="reason">Illness Reason:</label>
+            <input type="text" class="form-control" name="reason" required>
+        </div>
+
+        <div class="form-group">
+            <label for="medicine_name">Medicine Name:</label>
+            <input type="text" class="form-control" name="medicine_name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="consumption_time">Consumption Time:</label>
+            <select class="form-control" name="consumption_time" required>
+                <option value="morning">Morning</option>
+                <option value="evening">Evening</option>
+
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Consultation</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'nav2.html' %}
+
+{% block content %}
+<style>
+    .container {
+        background-color: rgba(14, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 80px;
+        color: #f2eaea;
+        margin-top: 40px;
+        margin-left: 400px;
+
+    }
+
+    .table th,
+    .table td {
+        color: #efe4e4;
+        /* Set text color for the table cells */
+        font-size: large;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            margin-top: -2.5rem !important;
+            width: 311px;
+            margin-left: 43px;
+        }
+
+        .sidebar {
+            width: 35px;
+            margin-top: -98px;
+            height: 900px;
+        }
+    }
+</style>
+<div class="container mt-4">
+    <h2>Appointment Details</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>Patient ID:</strong> {{ appointment.patient.patient_id }}</p>
+            <p><strong>Token Number:</strong> {{ appointment.token_number }}</p>
+            <p><strong>Patient Name:</strong> {{ appointment.patient.name }}</p>
+            <p><strong>Address:</strong> {{ appointment.patient.address }}</p>
+            <p><strong>Email:</strong> {{ appointment.patient.email }}</p>
+            <p><strong>Mobile Number:</strong> {{ appointment.patient.mobile_number }}</p>
+            <p><strong>Department:</strong> {{ appointment.department}}</p>
+        </div>
+
+        <div class="col-md-6">
+            <p><strong>Assigned Doctor:</strong> {{ appointment.doctor.D_name }}</p>
+            <p><strong>Appointment Date:</strong> {{ appointment.appointment_date }}</p>
+            <p><strong>Appointment Time:</strong> {{ appointment.appointment_time }}</p>
+            <p><strong>Reason:</strong> {{ appointment.reason }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

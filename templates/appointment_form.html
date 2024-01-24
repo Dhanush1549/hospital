@@ -1,0 +1,103 @@
+{% extends 'nav2.html' %}
+
+{% block content %}
+<style>
+    .container {
+        background-color: rgba(250, 242, 242, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 80px;
+        color: #070707;
+        margin-top: 40px;
+        margin-left: 400px;
+    }
+
+    .table th,
+    .table td {
+        color: #080808;
+        /* Set text color for the table cells */
+        font-size: large;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            margin-top: -2.5rem !important;
+            width: 314px;
+            margin-left: 41px;
+        }
+
+        .sidebar {
+            width: 35px;
+            margin-top: -98px;
+            height: 900px;
+        }
+    }
+</style>
+<div class="container mt-4">
+    <h2>Appointment Form</h2>
+    <p>Patient ID: {{ patient.patient_id }}</p>
+    <p>Patient Name: {{ patient.name }}</p>
+
+    <form method="post" action="{% url 'appointment_form' patient_id=patient.patient_id %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="appointment_date">Appointment Date:</label>
+            <input type="date" class="form-control" name="appointment_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="appointment_time">Appointment Time:</label>
+            <input type="time" class="form-control" name="appointment_time" required>
+        </div>
+
+        <div class="form-group">
+            <label for="reason">Reason for Appointment:</label>
+            <textarea class="form-control" name="reason" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="department">Department:</label>
+            <select class="form-control" name="department" id="departmentSelect" required>
+                <option value="">Select a Department</option>
+                {% for department in departments %}
+                <option value="{{ department.id }}">{{ department.department }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="doctor">Doctor:</label>
+            <select class="form-control" name="doctor" id="doctorSelect" required>
+                <option value="">Select a Doctor</option>
+
+            </select>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Submit">
+    </form>
+</div>
+
+
+<script>
+    document.getElementById('departmentSelect').addEventListener('change', function () {
+        var selectedDepartmentId = this.value;
+
+
+        fetch(`/get_doctors_by_department/?department_id=${selectedDepartmentId}`)
+            .then(response => response.json())
+            .then(doctors => {
+                var doctorSelect = document.getElementById('doctorSelect');
+                doctorSelect.innerHTML = '<option value="">Select a Doctor</option>';
+                doctors.forEach(doctor => {
+                    var option = document.createElement('option');
+                    option.value = doctor.id;
+                    option.text = doctor.D_name;
+                    doctorSelect.appendChild(option);
+                });
+            });
+    });
+</script>
+
+<script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+{% endblock %}

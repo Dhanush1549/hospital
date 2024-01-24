@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            padding-top: 56px;
+            background-image: url('{% static "image/hosbg1.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            background-attachment: fixed;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 0;
+            }
+        }
+
+        .footer {
+            padding: 20px;
+            background-color: rgba(55, 53, 53, 0.8);
+            color: #f0e7e7;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 80px;
+           
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="#">Welcare</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+           
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'nav' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_department' %}">ADD DEPARTMENT</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'all_departments' %}">DEPARTMENT DETAILS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register_patient' %}">REGISTER PATIENT</a>
+                </li>
+
+         
+                <li class="nav-item">
+                    <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'search_patient' %}">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search Patient ID"
+                            aria-label="Search" name="patient_id" required>
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout_view' %}">LOGOUT</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    {% for message in messages %}
+    <h5>
+        <div class="alert alert-success mt-5" style="width: 50%;">
+            {{ message }}
+        </div>
+    </h5>
+    {% endfor %}
+
+    <div class="container mt-4">
+        <h2>Appointment Form</h2>
+        <p>Patient ID: {{ patient.patient_id }}</p>
+        <p>Patient Name: {{ patient.name }}</p>
+
+        <form method="post" action="{% url 'appointment_form' patient_id=patient.patient_id %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="appointment_date">Appointment Date:</label>
+                <input type="date" class="form-control" name="appointment_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="appointment_time">Appointment Time:</label>
+                <input type="time" class="form-control" name="appointment_time" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reason">Reason for Appointment:</label>
+                <textarea class="form-control" name="reason" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department:</label>
+                <select class="form-control" name="department" id="departmentSelect" required>
+                    <option value="">Select a Department</option>
+                    {% for department in departments %}
+                        <option value="{{ department.id }}">{{ department.department }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="doctor">Doctor:</label>
+                <select class="form-control" name="doctor" id="doctorSelect" required>
+                    <option value="">Select a Doctor</option>
+       
+                </select>
+            </div>
+
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </form>
+    </div>
+
+
+    <script>
+        document.getElementById('departmentSelect').addEventListener('change', function() {
+            var selectedDepartmentId = this.value;
+
+            
+            fetch(`/get_doctors_by_department/?department_id=${selectedDepartmentId}`)
+                .then(response => response.json())
+                .then(doctors => {
+                    var doctorSelect = document.getElementById('doctorSelect');
+                    doctorSelect.innerHTML = '<option value="">Select a Doctor</option>';
+                    doctors.forEach(doctor => {
+                        var option = document.createElement('option');
+                        option.value = doctor.id;
+                        option.text = doctor.D_name;
+                        doctorSelect.appendChild(option);
+                    });
+                });
+        });
+    </script>
+
+    <div class="footer">
+        <p>&copy; Your Hospital 2024. All rights reserved.</p>
+        <p>123 Medical Street, Cityville</p>
+        <p>Contact: +1 123-456-7890</p>
+    </div>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+</body>
+
+</html>

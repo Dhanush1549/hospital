@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            padding-top: 56px;
+        }
+
+        body {
+            background-image: url('{% static "image/d1.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 56px;
+            background-attachment: fixed;
+
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 0;
+
+            }
+        }
+
+        .footer {
+            padding: 20px 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            position: bottom;
+            bottom: 0;
+            width: 100%;
+            height: 20%;
+        }
+
+        .footer-icons {
+            margin-top: 10px;
+        }
+
+        .footer-icons i {
+            font-size: 24px;
+            margin: 0 10px;
+        }
+
+        .quote-container {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .quote {
+            font-size: 28px;
+            font-style: italic;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .card-img-top {
+            max-height: 200px;
+            object-fit: cover;
+        }
+
+        .card-text {
+            text-align: center;
+        }
+
+        .btn-primary {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .about-us {
+            color: #fff;
+            text-align: center;
+            padding: 50px 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .about-us h2 {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .about-us p {
+            font-size: 18px;
+        }
+
+        .about-us img {
+            max-width: 80%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .contact-us {
+            color: #fff;
+            text-align: center;
+            padding: 50px 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .contact-us h2 {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .contact-us p {
+            font-size: 18px;
+        }
+        .navbar-brand {
+            color: #100f0f !important; /* White font color */
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            margin: auto;
+            text-align: center; /* Center the nav items */
+        }
+
+        .navbar-nav .nav-item {
+            margin: 0 10px;
+            margin-right: 20px;
+        }
+
+        .navbar-nav .nav-link {
+            color: #080808 !important; /* White font color */
+            font-weight: bolder;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .navbar-nav .nav-link i {
+            margin-right: 5px; /* Adjust the spacing between icon and text */
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="">Welcare</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'nav' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'nav3' %}">DOCTORS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'doctor_signup' %}">SIGNUP</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login_all' %}">LOGIN</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="quote-container">
+        <p class="quote">"Medicines can cure diseases, but only doctors can cure patients."</p>
+    </div><br><br><br>
+    <div class="card-deck">
+        <div class="card">
+            <img class="card-img-top" src="{% static 'image/doc1.jpg' %}" alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text">Special Care</p>
+            </div>
+        </div>
+        <!-- Repeat this structure for other cards -->
+        <div class="card">
+            <img class="card-img-top" src="{% static 'image/doc2.jpg' %}" alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text">Best Medicine</p>
+            </div>
+        </div>
+        <!-- Repeat this structure for other cards -->
+        <div class="card">
+            <img class="card-img-top" src="{% static 'image/doc3.jpg' %}" alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text">Special Treatment</p>
+            </div>
+        </div>
+    </div>
+    </div><br><br>
+    <div class="about-us">
+        <h2>About Us</h2>
+        <img src="{% static 'image/about_us2.jpg' %}" alt="About Us" class="img-fluid">
+        <p>
+            Welcome to Welcare Hospital, where we are dedicated to providing compassionate and quality healthcare.
+            Our team of experienced professionals is committed to your well-being, ensuring you receive the best
+            medical care possible. At Welcare, we prioritize the health and comfort of our patients, making your
+            experience with us positive and reassuring.
+        </p>
+    </div><br><br>
+    <div class="contact-us">
+        <h2>Contact Us</h2>
+        <p>
+            If you have any questions or need assistance, feel free to contact us. Our team is here to help you.
+            <br>
+            Address: 123 Medical Street, Cityville
+            <br>
+            Phone: +1 123-456-7890
+            <br>
+            Email: info@welcarehospital.com
+        </p>
+    </div>
+    {% for message in messages %}
+    <h5>
+        <div class="alert alert-success mt-5" style="width: 50%;">
+            {{ message }}
+        </div>
+    </h5>
+    {% endfor %}
+
+    <div class="container mt-5">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+
+    <div class="footer">
+        <p>&copy; Your Hospital 2024. All rights reserved.</p>
+        <p>123 Medical Street, Cityville</p>
+        <p>Contact: +1 123-456-7890</p>
+        <div class="footer-icons">
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+</body>
+
+</html>

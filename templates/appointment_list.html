@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('{% static "image/d2.jpg" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 56px;
+            background-attachment: fixed;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            background-color: #110137;
+            padding-top: 56px;
+            transition: width 0.3s;
+            margin-top: -56px;
+        }
+
+        .sidebar a {
+            padding: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        .sidebar a span {
+            display: inline-block;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        .h5,
+        h5 {
+            margin-top: -98px;
+            width: 1200px;
+            margin-left: 1px;
+            height: 158px;
+        }
+
+        .container {
+            background-color: rgba(248, 245, 245, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 80px;
+            margin-top: -600px;
+            margin-left: 400px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 36px;
+            }
+
+            .container {
+                margin-left: 40px;
+                margin-top: 0.5rem !important;
+                width: 318px;
+            }
+
+            .h1,
+            h1 {
+                font-size: 27px;
+            }
+
+            a.btn.btn-success {
+                font-size: small;
+            }
+
+            .sidebar a span {
+                display: none;
+            }
+        }
+
+        .h5,
+        h5 {
+            margin-top: -114px;
+            width: 276px;
+            margin-left: 1px;
+            height: 158px;
+        }
+
+        a.btn.btn-primary {
+            font-size: small;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <a class="btn btn-primary" href="#"><i class="fas fa-bars"></i><span>WELCARE</span></a><br>
+        <a href="{% url 'doctor_home1' %}" class="btn btn-success"><i class="fas fa-home"></i><span>Home</span></a><br>
+        <a href="{% url 'appointment_list' %}" class="btn btn-primary"><i
+                class="far fa-calendar-alt"></i><span>Appointment List</span></a><br>
+        <a href="{% url 'doctor_consulted_patients' %}" class="btn btn-success"><i
+                class="fas fa-history"></i><span>Consultated History</span></a><br>
+        <a href="{% url 'change_password' %}" class="btn btn-primary"><i class="fas fa-key"></i><span>Change
+                Passwords</span></a><br>
+        <a href="{% url 'doctor_search_patient' %}" class="btn btn-warning"><i
+                class="fas fa-search"></i><span>Search</span></a><br>
+        <a href="{% url 'nav3' %}" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </div>
+    {% for message in messages %}
+    <h5>
+        <div class="alert alert-success mt-5" style="width: 50%;">
+            {{ message }}
+        </div>
+    </h5>
+    {% endfor %}
+
+    <div class="container mt-4">
+        <h1 style="color: #090000;">Appointment List</h1>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Appointment Date</th>
+                        <th>Appointment Time</th>
+                        <th>Patient Name</th>
+                        <th>Token Number</th>
+                        <th>Consultation Status</th>
+                        <th>Reassign Patient</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                    <tr {% if appointment.consulted %}class="table-success" {% endif %}>
+                        <td>{{ appointment.appointment_date }}</td>
+                        <td>{{ appointment.appointment_time }}</td>
+                        <td>{{ appointment.patient.name }}</td>
+                        <td>{{ appointment.token_number }}</td>
+                        <td>
+                            {% if appointment.consulted %}
+                            <button type="button" class="btn btn-success" style="color: rgb(194, 8, 8);"
+                                disabled>Consulted</button>
+                            {% else %}
+                            <a href="{% url 'consultation' appointment.id %}" class="btn btn-primary"
+                                onclick="return confirm('Are you sure you want to proceed with the consultation?')">Consult</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'reassign_patient' appointment.id %}" class="btn btn-warning">Reassign</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

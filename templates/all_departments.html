@@ -1,0 +1,72 @@
+{% extends 'nav2.html' %}
+
+{% block content %}
+<style>
+    .container {
+        background-color: rgba(242, 237, 237, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 80px;
+        color: #f2eaea;
+        margin-top: 40px;
+        margin-left: 400px;
+    }
+
+    .table th,
+    .table td {
+        color: #080808;
+        /* Set text color for the table cells */
+        font-size: large;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            margin-top: -0.5rem !important;
+            width: 88%;
+            margin-left: 41px;
+        }
+
+        .h1,
+        h1.mb-4 {
+            font-size: 28px;
+        }
+    }
+
+    .h5,
+    h5 {
+        width: 100%;
+    }
+</style>
+<div class="container mt-4">
+    {% for message in messages %}
+    <div class="alert alert-success mt-3" style="width: 100%;">
+        {{ message }}
+    </div>
+    {% endfor %}
+    <h1 class="mb-4" style="color: #080808;">All Departments</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Department</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for department in departments %}
+                <tr>
+                    <td>{{ department.department }}</td>
+                    <td>{{ department.description }}</td>
+                    <td>
+                        <a href="{% url 'edit_department' department.id %}" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="{% url 'delete_department' department.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
